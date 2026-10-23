@@ -1,6 +1,6 @@
 import re
 
-FILE = "level-2/in_level-2_0-example.txt"
+FILE = "level-2/in_level-2_1-small.txt"
 
 class Recipe():
     def __init__(self, inputs, outputs):
@@ -29,7 +29,7 @@ with open(FILE, "r") as input:
     for line in lines[line_i:]:
         line_i += 1
 
-        if len(line) == 1:
+        if len(line) < 4 and line:
             sequences.append(current_sequence)
             current_sequence = []
 
@@ -59,8 +59,60 @@ with open(FILE, "r") as input:
 
     sequences.append(current_sequence)
 
+sequence_results = []
+
 for s in sequences:
-    print(s)
+    cost = 0
+    inventory = {}
+
+    for recipe in s:
+        for input_item in recipe.inputs:
+            amount = recipe.inputs[input_item]
+
+            if input_item in inventory:
+                inventory[input_item] -= amount
+
+                if inventory[input_item] < 0:
+                    buy_amount = abs(inventory[input_item])
+                    inventory[input_item] = 0
+
+                else:
+                    buy_amount = 0
+
+            else:
+                buy_amount = amount
+
+            cost += prices[input_item] * buy_amount
+
+        for output_item in recipe.outputs:
+            amount = recipe.outputs[output_item]
+
+            if output_item in inventory:
+                inventory[output_item] += amount
+
+            else:
+                inventory[output_item] = amount
+
+    sequence_results.append(
+        (cost, inventory)
+    )
+
+with open("output2.txt", "w") as file:
+    for res in sequence_results:
+        cost = res[0]
+        inv = res[1]
+
+        line = str(cost) + " -> "
+
+        for item in inv:
+            if inv[item] == 0:
+                continue
+
+            line += str(inv[item]) + " " + item + ", "
+
+        file.write(line[:-2]+"\n")
+
+
 
         
 
