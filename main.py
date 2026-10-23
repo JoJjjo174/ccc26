@@ -7,9 +7,9 @@ class Molecule():
         self.mol = mol
 
 class Recipe():
-    def __init__(self, input, output):
-        self.input = input
-        self.output = output
+    def __init__(self, inputs, outputs):
+        self.inputs = inputs
+        self.outputs = outputs
 
 class Collection():
     def __init__(self, materials, recipe):
@@ -31,17 +31,17 @@ with open(FILE, "r") as input:
             ingredients = recipe_split[0].split(", ")
             result = recipe_split[1].split(", ")
 
-            ingredient_molecules = []
+            ingredient_molecules = {}
             for i in ingredients:
                 amount, name = i.split()
                 amount = int(amount)
-                ingredient_molecules.append(Molecule(amount, name))
+                ingredient_molecules[name] = amount
 
-            output_molecules = []
+            output_molecules = {}
             for i in ingredients:
                 amount, name = i.split()
                 amount = int(amount)
-                output_molecules.append(Molecule(amount, name))
+                output_molecules[name] = amount
 
             recipe = Recipe(ingredient_molecules, output_molecules)
 
@@ -50,13 +50,16 @@ with open(FILE, "r") as input:
         else:
             split_line = line.rstrip().split(", ")
 
-            available_molecules = []
+            available_molecules = {}
             for i in split_line:
-                print(i)
                 amount, name = i.split()
                 amount = int(amount)
-                available_molecules.append(Molecule(amount, name))
+                available_molecules[name] = amount
 
-            current_collection.materials += available_molecules
+            current_collection.materials = available_molecules
+
+
+
+
 
 
